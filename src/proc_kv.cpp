@@ -415,3 +415,67 @@ static int proc_strlen(Server *serv, Link *link, const Request &req, Response *r
 	}
 	return 0;
 }
+
+static int proc_msg_append(Server *serv, Link *link, const Request &req, Response *resp){
+	if(req.size() < 3){
+		resp->push_back("client_error");
+	}else{
+		int ret = serv->ssdb->msg_append(req[1], req[2]);
+		if(ret == -1){
+			resp->push_back("error");
+		}else{
+			char buf[32];
+			snprintf(buf, sizeof(buf), "%d", ret);
+			resp->push_back("ok");
+			resp->push_back(buf);
+		}
+	}
+	return 0;
+}
+
+static int proc_msg_rows(Server *serv, Link *link, const Request &req, Response *resp){
+	if(req.size() < 2){
+		resp->push_back("client_error");
+	}else{
+		int ret = serv->ssdb->msg_rows(req[1]);
+		char buf[32];
+		snprintf(buf, sizeof(buf), "%d", ret);
+		resp->push_back("ok");
+		resp->push_back(buf);
+	}
+	return 0;
+}
+
+static int proc_msg_front(Server *serv, Link *link, const Request &req, Response *resp){
+	if(req.size() < 2){
+		resp->push_back("client_error");
+	}else{
+		std::string val;
+		int ret = serv->ssdb->msg_front(req[1], &val);
+		if(ret == 1){
+			resp->push_back("ok");
+			resp->push_back(val);
+		}else if(ret == 0){
+			resp->push_back("not_found");
+		}else{
+			resp->push_back("error");
+		}
+	}
+	return 0;
+}
+
+static int proc_msg_pop_front(Server *serv, Link *link, const Request &req, Response *resp){
+	if(req.size() < 2){
+		resp->push_back("client_error");
+	}else{
+		int ret = serv->ssdb->msg_pop_front(req[1]);
+		if(ret == -1){
+			resp->push_back("error");
+		} else {
+			resp->push_back("ok");
+			resp->push_back("1");
+		}
+			
+	}
+	return 0;
+}

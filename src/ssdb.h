@@ -136,6 +136,13 @@ public:
 			std::vector<std::string> *list);
 	int qget(const Bytes &name, int64_t index, std::string *item);
 
+
+	int msg_append(const Bytes &key, const Bytes &val, char log_type=BinlogType::SYNC);
+	int msg_rows(const Bytes &key);
+	int msg_pop_front(const Bytes &key, char log_type = BinlogType::SYNC);
+	int msg_front(const Bytes &key, std::string *result);
+	int msg_raw_get(const Bytes &key, std::string *val) const;
+
 private:
 	int64_t _qpush(const Bytes &name, const Bytes &item, uint64_t front_or_back_seq, char log_type=BinlogType::SYNC);
 	int _qpop(const Bytes &name, std::string *item, uint64_t front_or_back_seq, char log_type=BinlogType::SYNC);

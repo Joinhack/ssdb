@@ -49,6 +49,8 @@ class DataType{
 public:
 	static const char SYNCLOG	= 1;
 	static const char KV		= 'k';
+	static const char MM		= 'm'; //meta for msg.
+	static const char MK		= 'K'; //meta for msg.
 	static const char HASH		= 'h'; // hashmap(sorted by key)
 	static const char HSIZE		= 'H';
 	static const char ZSET		= 's'; // key => score

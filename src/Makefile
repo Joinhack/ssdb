@@ -2,10 +2,10 @@ include ../build_config.mk
 
 OBJS = ssdb.o t_kv.o t_hash.o t_zset.o t_queue.o link.o \
 	backend_dump.o backend_sync.o slave.o binlog.o serv.o \
-	iterator.o ttl.o
+	iterator.o ttl.o msg.o
 UTIL_OBJS = util/log.o util/fde.o util/config.o util/bytes.o util/sorted_set.o
 EXES = ../ssdb-server
-
+CFLAGS := ${CFLAGS} -std=c++11
 
 all: ssdb.h ${OBJS} ssdb-server.o
 	${CXX} -o ../ssdb-server ssdb-server.o ${OBJS} ${UTIL_OBJS} ${CLIBS}
@@ -23,6 +23,9 @@ iterator.o: ssdb.h iterator.h iterator.cpp
 
 t_kv.o: ssdb.h t_kv.h t_kv.cpp
 	${CXX} ${CFLAGS} -c t_kv.cpp
+
+msg.o: msg.cpp
+	${CXX} ${CFLAGS} -c msg.cpp
 
 t_hash.o: ssdb.h t_hash.h t_hash.cpp
 	${CXX} ${CFLAGS} -c t_hash.cpp

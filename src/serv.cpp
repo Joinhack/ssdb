@@ -140,6 +140,10 @@ static proc_map_t proc_map;
 	DEF_PROC(clear_binlog);
 	DEF_PROC(ping);
 	DEF_PROC(auth);
+	DEF_PROC(msg_append);
+	DEF_PROC(msg_rows);
+	DEF_PROC(msg_front);
+	DEF_PROC(msg_pop_front);
 #undef DEF_PROC
 
 
@@ -250,6 +254,10 @@ static Command commands[] = {
 	PROC(expire, "wt"),
 	PROC(ping, "r"),
 	PROC(auth, "r"),
+	PROC(msg_append, "wt"),
+	PROC(msg_rows, "r"),
+	PROC(msg_front, "r"),
+	PROC(msg_pop_front, "wt"),
 
 	{NULL, NULL, 0, NULL}
 };

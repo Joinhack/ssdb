@@ -107,6 +107,10 @@ static RedisCommand_raw cmds_raw[] = {
 	{STRATEGY_AUTO,		"lindex",		"qget", 			REPLY_BULK},
 	{STRATEGY_AUTO,		"lrange",		"qslice",			REPLY_MULTI_BULK},
 
+	{STRATEGY_AUTO, "msg_append",		"msg_append",			REPLY_INT},
+	{STRATEGY_AUTO, "msg_rows",		"msg_rows",			REPLY_INT},
+	{STRATEGY_AUTO, "msg_front",		"msg_front",			REPLY_BULK},
+	{STRATEGY_AUTO, "msg_pop_front",		"msg_pop_front",			REPLY_INT},
 	{STRATEGY_AUTO, 	NULL,			NULL,			0}
 };
 
