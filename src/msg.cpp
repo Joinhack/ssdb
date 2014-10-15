@@ -168,9 +168,11 @@ int SSDB::msg_append(const Bytes &key, const Bytes &val, char log_type) {
 	uint16_t len = val.size();
 	raw.append((char*)(&len), 2);
 	raw.append(val.data(), val.size());
+
 	std::string buf = marshal_metas(metas, total, seq);
 	binlogs->Put(metakey, leveldb::Slice(buf));
 	binlogs->add_log(log_type, BinlogCommand::KSET, metakey);
+
 	binlogs->Put(mk, raw);
 	binlogs->add_log(log_type, BinlogCommand::KSET, mk);
 	leveldb::Status s = binlogs->commit();
@@ -225,6 +227,7 @@ int SSDB::msg_pop_front(const Bytes &key, char log_type) {
 	auto meta = metas.front();
 	metas.pop_front();
 	binlogs->begin();
+	total -= meta.Rows();
 	if(metas.size() == 0) {
 		binlogs->Delete(metakey);
 		binlogs->add_log(log_type, BinlogCommand::KDEL, metakey);
@@ -241,7 +244,7 @@ int SSDB::msg_pop_front(const Bytes &key, char log_type) {
 		log_error("del error: %s", s.ToString().c_str());
 		return -1;
 	}
-	return 1;
+	return total;
 }
 
 int SSDB::msg_front(const Bytes &key, std::string *result) {

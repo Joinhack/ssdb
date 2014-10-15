@@ -439,7 +439,8 @@ static int proc_msg_rows(Server *serv, Link *link, const Request &req, Response 
 	}else{
 		int ret = serv->ssdb->msg_rows(req[1]);
 		char buf[32];
-		snprintf(buf, sizeof(buf), "%d", ret);
+		int n = snprintf(buf, sizeof(buf), "%d", ret);
+		buf[n] = '\0';
 		resp->push_back("ok");
 		resp->push_back(buf);
 	}
@@ -472,8 +473,11 @@ static int proc_msg_pop_front(Server *serv, Link *link, const Request &req, Resp
 		if(ret == -1){
 			resp->push_back("error");
 		} else {
+			char buf[32];
+			int n = snprintf(buf, sizeof(buf), "%d", ret);
+			buf[n] = '\0';
 			resp->push_back("ok");
-			resp->push_back("1");
+			resp->push_back(buf);
 		}
 			
 	}
