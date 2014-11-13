@@ -2,10 +2,12 @@
 #include <list>
 #include <cstdint>
 #include "msg.h"
+#include "lockpool.h"
 
 #define MAXROWSPERKEY 3
 #define MAXROWS MAXROWSPERKEY*2
 
+static LockPool pool;
 
 class Meta {
 private:
@@ -99,7 +101,9 @@ int SSDB::msg_rows(const Bytes &key) {
 		log_error("empty key!");
 		return -1;
 	}
+	
 	std::string metakey = encode_msg_meta_key(key);
+	Lock lock = pool.getLock(metakey);
 	std::string metaRaw;
 	int found = this->msg_raw_get(Bytes(metakey), &metaRaw);
 	if(!found)
@@ -118,7 +122,7 @@ int SSDB::msg_append(const Bytes &key, const Bytes &val, char log_type) {
 	std::list<Meta> metas;
 	std::string metaRaw, raw;
 	std::string metakey = encode_msg_meta_key(key);
-
+	Lock lock = pool.getLock(metakey);
 
 	int found = this->msg_raw_get(Bytes(metakey), &metaRaw);
 	uint32_t total = 0;
@@ -204,6 +208,7 @@ int SSDB::msg_pop_front(const Bytes &key, char log_type) {
 		return -1;
 	}
 	auto metakey = encode_msg_meta_key(key);
+	Lock lock = pool.getLock(metakey);
 	std::list<Meta> metas;
 	std::string metaRaw;
 	int found = this->msg_raw_get(Bytes(metakey), &metaRaw);
@@ -253,6 +258,7 @@ int SSDB::msg_front(const Bytes &key, std::string *result) {
 		return -1;
 	}
 	auto metakey = encode_msg_meta_key(key);
+	Lock lock = pool.getLock(metakey);
 	std::list<Meta> metas;
 	std::string metaRaw;
 	int found = this->msg_raw_get(Bytes(metakey), &metaRaw);
