@@ -12,6 +12,7 @@ public:
 		std::string key;
 		int times;
 	};
+
 	Lock(LockHandle *handle, LockPool *pool);
 
 	Lock(Lock &&l) {
@@ -19,6 +20,7 @@ public:
 		_handle = l._handle;
 		l._handle = NULL;
 		l._pool = NULL;
+		lock();
 	}
 
 	void lock() {
@@ -84,7 +86,7 @@ Lock LockPool::getLock(const std::string &k) {
 		_pool[k] = handle;
 	}
 	handle->times++;
-	return Lock(handle, this);
+	return std::move(Lock(handle, this));
 }
 
 void LockPool::recycle(Lock::LockHandle *handle) {
@@ -112,5 +114,4 @@ Lock::~Lock() {
 Lock::Lock(LockHandle *handle, LockPool *pool) {
 	_handle = handle;
 	_pool = pool;
-	lock();
 }
